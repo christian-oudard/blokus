@@ -1,15 +1,13 @@
 # coding: utf8
 
-def _translate_origin(points):
-    points = list(points)
-    min_x = min(x for x, y in points)
-    min_y = min(y for x, y in points)
-    for x, y in points:
-        yield (x - min_x, y - min_y)
-
 class Poly:
     def __init__(self, data):
-        self._data = tuple(data)
+        # Give points a predictable order.
+        points = sorted(data)
+        # Translate data to origin.
+        min_x = min(x for x, y in points)
+        min_y = min(y for x, y in points)
+        self._data = tuple((x - min_x, y - min_y) for x, y in points)
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self._data)
@@ -79,14 +77,7 @@ class Poly:
         #
         """
         clone = Poly(self._data)
-
-        # Translation and sorting.
-        clone._data = tuple(sorted(_translate_origin(clone._data)))
-
-        # Choose the best orientation.
-        clone = min(clone.orientations())
-
-        return clone
+        return min(clone.orientations())
 
     def orientations(self):
         """
@@ -126,14 +117,10 @@ class Poly:
         clone = Poly(self._data)
         rotations = [clone]
         for _ in range(3):
-            rotations.append(Poly(sorted(_translate_origin(
-                (y, -x) for x, y in rotations[-1]._data
-            ))))
+            rotations.append(Poly((y, -x) for x, y in rotations[-1]._data))
         mirrors = []
         for r in rotations:
-            mirrors.append(Poly(sorted(_translate_origin(
-                (x, -y) for x, y in r._data
-            ))))
+            mirrors.append(Poly((x, -y) for x, y in r._data))
         return set(rotations + mirrors)
 
 
