@@ -113,8 +113,7 @@ def gen_polys(generation):
     ----
     """
     if generation == 1:
-        yield Poly([(0, 0)])
-        return
+        return {Poly([(0, 0)])}
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
@@ -123,6 +122,4 @@ def gen_polys(generation):
             for adj in adjacent(point):
                 if adj not in data:
                     new_polys.add(Poly(data | {adj}).canonical())
-
-    for poly in new_polys:
-        yield poly
+    return new_polys
