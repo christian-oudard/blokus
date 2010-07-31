@@ -1,6 +1,7 @@
 # coding: utf8
 
 def _translate_origin(points):
+    points = list(points)
     min_x = min(x for x, y in points)
     min_y = min(y for x, y in points)
     for x, y in points:
@@ -92,7 +93,6 @@ class Poly:
 
         return clone
 
-
     def rotated_right(self):
         """
         >>> p = Poly([(0, 0), (1, 0), (1, 1), (2, 1)])
@@ -112,6 +112,54 @@ class Poly:
         clone._data = tuple(sorted((y, -x) for x, y in clone._data))
         clone._data = tuple(_translate_origin(clone._data))
         return clone
+
+    def orientations(self):
+        """
+        >>> p = Poly([(0, 0), (0, 1), (0, 2), (1, 0)])
+        >>> for o in sorted(p.orientations()):
+        ...     print(o)
+        ...     print('----')
+        ##
+        #
+        #
+        ----
+        #
+        #
+        ##
+        ----
+        ###
+        #
+        ----
+        #
+        ###
+        ----
+        ##
+         #
+         #
+        ----
+        ###
+          #
+        ----
+          #
+        ###
+        ----
+         #
+         #
+        ##
+        ----
+        """
+        clone = Poly(self._data)
+        rotations = [clone]
+        for _ in range(3):
+            rotations.append(Poly(sorted(_translate_origin(
+                (y, -x) for x, y in rotations[-1]._data
+            ))))
+        mirrors = []
+        for r in rotations:
+            mirrors.append(Poly(sorted(_translate_origin(
+                (x, -y) for x, y in r._data
+            ))))
+        return set(rotations + mirrors)
 
 
 def adjacent(point):
