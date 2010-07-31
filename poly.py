@@ -83,34 +83,9 @@ class Poly:
         # Translation and sorting.
         clone._data = tuple(sorted(_translate_origin(clone._data)))
 
-        # Choose the best rotation.
-        rotations = [clone]
-        for _ in range(3):
-            rotations.append(rotations[-1].rotated_right())
-        clone = min(rotations)
+        # Choose the best orientation.
+        clone = min(clone.orientations())
 
-        #TODO: mirroring
-
-        return clone
-
-    def rotated_right(self):
-        """
-        >>> p = Poly([(0, 0), (1, 0), (1, 1), (2, 1)])
-        >>> p
-        Poly(((0, 0), (1, 0), (1, 1), (2, 1)))
-        >>> print(p)
-        ##
-         ##
-        >>> p.rotated_right()
-        Poly(((0, 1), (0, 2), (1, 0), (1, 1)))
-        >>> print(p.rotated_right())
-         #
-        ##
-        #
-        """
-        clone = Poly(self._data)
-        clone._data = tuple(sorted((y, -x) for x, y in clone._data))
-        clone._data = tuple(_translate_origin(clone._data))
         return clone
 
     def orientations(self):
@@ -207,19 +182,12 @@ def gen_polys(generation):
     ##
     #
     ----
-    #
-    #
-    ##
-    ----
     ##
     ##
     ----
     #
     ##
      #
-    ----
-    ##
-     ##
     ----
     """
     if generation == 1:
