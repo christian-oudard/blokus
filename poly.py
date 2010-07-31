@@ -12,16 +12,17 @@ class Poly:
     _block_char = '#'
     def __str__(self):
         """
-        >>> p = Poly([(0, 0), (1, 0)])
+        >>> p = Poly([(0, 0), (1, 0), (1, 1), (2, 1)])
         >>> print(p)
         ##
+         ##
         """
         max_x = max(x for x, y in self._data)
         max_y = max(y for x, y in self._data)
         grid = [[' ' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
         for x, y in self._data:
             grid[y][x] = self._block_char
-        return '\n'.join(''.join(line) for line in grid)
+        return '\n'.join(''.join(line).rstrip() for line in grid)
 
     def canonical(self):
         """
