@@ -1,16 +1,16 @@
 # coding: utf8
 
 class Poly:
-    def __init__(self, data):
+    def __init__(self, points):
         # Give points a predictable order.
-        points = sorted(data)
-        # Translate data to origin.
+        points = sorted(points)
+        # Translate points to origin.
         min_x = min(x for x, y in points)
         min_y = min(y for x, y in points)
-        self._data = tuple((x - min_x, y - min_y) for x, y in points)
+        self._points = tuple((x - min_x, y - min_y) for x, y in points)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self._data)
+        return '{}({})'.format(self.__class__.__name__, self._points)
 
     _block_char = '#'
     def __str__(self):
@@ -20,25 +20,25 @@ class Poly:
         ##
          ##
         """
-        max_x = max(x for x, y in self._data)
-        max_y = max(y for x, y in self._data)
+        max_x = max(x for x, y in self._points)
+        max_y = max(y for x, y in self._points)
         grid = [[' ' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
-        for x, y in self._data:
+        for x, y in self._points:
             grid[y][x] = self._block_char
         return '\n'.join(''.join(line).rstrip() for line in grid)
 
     def __eq__(self, other):
-        return self._data == other._data
+        return self._points == other._points
 
     def __hash__(self):
         """
         >>> {Poly([(0, 0)]), Poly([(0, 0)])}
         {Poly(((0, 0),))}
         """
-        return hash((self.__class__, self._data))
+        return hash((self.__class__, self._points))
 
     def __lt__(self, other):
-        return self._data < other._data
+        return self._points < other._points
 
     def canonical(self):
         """
@@ -76,7 +76,7 @@ class Poly:
         #
         #
         """
-        clone = Poly(self._data)
+        clone = Poly(self._points)
         return min(clone.orientations())
 
     def orientations(self):
@@ -114,13 +114,13 @@ class Poly:
         ##
         ----
         """
-        clone = Poly(self._data)
+        clone = Poly(self._points)
         rotations = [clone]
         for _ in range(3):
-            rotations.append(Poly((y, -x) for x, y in rotations[-1]._data))
+            rotations.append(Poly((y, -x) for x, y in rotations[-1]._points))
         mirrors = []
         for r in rotations:
-            mirrors.append(Poly((x, -y) for x, y in r._data))
+            mirrors.append(Poly((x, -y) for x, y in r._points))
         return set(rotations + mirrors)
 
 
@@ -182,10 +182,10 @@ def gen_polys(generation):
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
-        data = poly._data
-        for point in data:
+        points = poly._points
+        for point in points:
             for adj in adjacent(point):
-                if adj not in data:
-                    new_poly = Poly(data + (adj,))
+                if adj not in points:
+                    new_poly = Poly(points + (adj,))
                     new_polys.add(new_poly.canonical())
     return new_polys
