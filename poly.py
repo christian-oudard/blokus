@@ -1,6 +1,10 @@
 # coding: utf8
 
-import vec
+def _translate_origin(points):
+    min_x = min(x for x, y in points)
+    min_y = min(y for x, y in points)
+    for x, y in points:
+        yield (x - min_x, y - min_y)
 
 class Poly:
     def __init__(self, data):
@@ -58,14 +62,55 @@ class Poly:
         >>> p.canonical()
         Poly(((0, 0), (0, 1)))
 
+        Their rotation is irrelevant:
+        >>> p = Poly([(0, 0), (0, 1)])
+        >>> print(p)
+        #
+        #
+        >>> print(p.canonical())
+        #
+        #
+        >>> p = Poly([(0, 0), (1, 0)])
+        >>> print(p)
+        ##
+        >>> print(p.canonical())
+        #
+        #
         """
-        clone = Poly(sorted(self._data))
-        min_x = min(x for x, y in self._data)
-        min_y = min(y for x, y in self._data)
-        clone._data = tuple(vec.add(point, (-min_x, -min_y)) for point in clone._data)
+        clone = Poly(self._data)
 
-        #TODO: rotation
+        # Translation and sorting.
+        clone._data = tuple(sorted(_translate_origin(clone._data)))
+
+        # Choose the best rotation.
+        rotations = [clone]
+        for _ in range(3):
+            rotations.append(rotations[-1].rotated_right())
+        clone = min(rotations)
+
         #TODO: mirroring
+
+        return clone
+
+
+    def rotated_right(self):
+        """
+        >>> p = Poly([(0, 0), (1, 0), (1, 1), (2, 1)])
+        >>> p
+        Poly(((0, 0), (1, 0), (1, 1), (2, 1)))
+        >>> print(p)
+        ##
+         ##
+        >>> p.rotated_right()
+        Poly(((0, 1), (0, 2), (1, 0), (1, 1)))
+        >>> print(p.rotated_right())
+         #
+        ##
+        #
+        """
+        clone = Poly(self._data)
+        clone._data = tuple(sorted((y, -x) for x, y in clone._data))
+        clone._data = tuple(_translate_origin(clone._data))
         return clone
 
 
@@ -88,8 +133,6 @@ def gen_polys(generation):
     #
     #
     ----
-    ##
-    ----
     >>> for poly in sorted(gen_polys(3)):
     ...     print(poly)
     ...     print('----')
@@ -100,16 +143,35 @@ def gen_polys(generation):
     ##
     #
     ----
+    >>> for poly in sorted(gen_polys(4)):
+    ...     print(poly)
+    ...     print('----')
+    #
+    #
+    #
+    #
+    ----
+    ##
+    #
+    #
+    ----
+    #
+    ##
+    #
+    ----
+    #
     #
     ##
     ----
     ##
-     #
-    ----
-    ###
-    ----
-     #
     ##
+    ----
+    #
+    ##
+     #
+    ----
+    ##
+     ##
     ----
     """
     if generation == 1:
@@ -117,9 +179,10 @@ def gen_polys(generation):
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
-        data = set(poly._data)
+        data = poly._data
         for point in data:
             for adj in adjacent(point):
                 if adj not in data:
-                    new_polys.add(Poly(data | {adj}).canonical())
+                    new_poly = Poly(data + (adj,))
+                    new_polys.add(new_poly.canonical())
     return new_polys
