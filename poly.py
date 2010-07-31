@@ -24,6 +24,19 @@ class Poly:
             grid[y][x] = self._block_char
         return '\n'.join(''.join(line).rstrip() for line in grid)
 
+    def __eq__(self, other):
+        return self._data == other._data
+
+    def __hash__(self):
+        """
+        >>> {Poly([(0, 0)]), Poly([(0, 0)])}
+        {Poly(((0, 0),))}
+        """
+        return hash((self.__class__, self._data))
+
+    def __lt__(self, other):
+        return self._data < other._data
+
     def canonical(self):
         """
         Return the canonical form of the polyomino.
@@ -54,19 +67,6 @@ class Poly:
         #TODO: rotation
         #TODO: mirroring
         return clone
-
-    def __eq__(self, other):
-        return self._data == other._data
-
-    def __hash__(self):
-        """
-        >>> {Poly([(0, 0)]), Poly([(0, 0)])}
-        {Poly(((0, 0),))}
-        """
-        return hash((self.__class__, self._data))
-
-    def __lt__(self, other):
-        return self._data < other._data
 
 
 def adjacent(point):
