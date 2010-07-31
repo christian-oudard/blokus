@@ -64,3 +64,65 @@ class Poly:
         {Poly(((0, 0),))}
         """
         return hash((self.__class__, self._data))
+
+    def __lt__(self, other):
+        return self._data < other._data
+
+
+def adjacent(point):
+    """
+    >>> list(adjacent((1, 1)))
+    [(0, 1), (2, 1), (1, 0), (1, 2)]
+    """
+    x, y = point
+    yield (x - 1, y)
+    yield (x + 1, y)
+    yield (x, y - 1)
+    yield (x, y + 1)
+
+def gen_polys(generation):
+    """
+    >>> for poly in sorted(gen_polys(2)):
+    ...     print(poly)
+    ...     print('----')
+    #
+    #
+    ----
+    ##
+    ----
+    >>> for poly in sorted(gen_polys(3)):
+    ...     print(poly)
+    ...     print('----')
+    #
+    #
+    #
+    ----
+    ##
+    #
+    ----
+    #
+    ##
+    ----
+    ##
+     #
+    ----
+    ###
+    ----
+     #
+    ##
+    ----
+    """
+    if generation == 1:
+        yield Poly([(0, 0)])
+        return
+
+    new_polys = set()
+    for poly in gen_polys(generation - 1):
+        data = set(poly._data)
+        for point in data:
+            for adj in adjacent(point):
+                if adj not in data:
+                    new_polys.add(Poly(data | {adj}).canonical())
+
+    for poly in new_polys:
+        yield poly
