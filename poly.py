@@ -124,11 +124,22 @@ class Poly:
             mirrors.append(Poly((x, -y) for x, y in r._points))
         return set(rotations + mirrors)
 
+    def adjacencies(self):
+        """
+        >>> p = Poly([(0, 0), (1, 0)])
+        >>> sorted(p.adjacencies())
+        [(-1, 0), (0, -1), (0, 1), (1, -1), (1, 1), (2, 0)]
+        """
+        for point in self._points:
+            for adj in adjacent(point):
+                if adj not in self._points:
+                    yield adj
+
 
 def adjacent(point):
     """
-    >>> list(adjacent((1, 1)))
-    [(0, 1), (2, 1), (1, 0), (1, 2)]
+    >>> sorted(adjacent((1, 1)))
+    [(0, 1), (1, 0), (1, 2), (2, 1)]
     """
     x, y = point
     yield (x - 1, y)
@@ -183,10 +194,7 @@ def gen_polys(generation):
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
-        points = poly._points
-        for point in points:
-            for adj in adjacent(point):
-                if adj not in points:
-                    new_poly = Poly(points + (adj,))
-                    new_polys.add(new_poly.canonical())
+        for adj in poly.adjacencies():
+            new_poly = Poly(poly._points + (adj,))
+            new_polys.add(new_poly.canonical())
     return new_polys
