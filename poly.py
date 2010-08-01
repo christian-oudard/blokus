@@ -141,15 +141,25 @@ def _adjacent(point):
 
 def adjacencies(points):
     """
-    >>> points = [(0, 0), (1, 0)]
-    >>> sorted(adjacencies(points))
-    [(-1, 0), (0, -1), (0, 1), (1, -1), (1, 1), (2, 0)]
+    >>> points = [(0, 0), (0, 1), (1, 0)]
+    >>> print(Poly(points))
+    ##
+    #
+    >>> adjs = list(adjacencies(points))
+    >>> len(adjs)
+    7
+    >>> print(Poly(adjs))
+     ##
+    #  #
+    # #
+     #
     """
     points = set(points)
-    for point in points:
+    for point in list(points):
         for adj in _adjacent(point):
             if adj not in points:
                 yield adj
+                points.add(adj)
 
 def gen_polys(generation):
     """
