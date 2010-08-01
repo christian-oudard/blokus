@@ -1,6 +1,6 @@
 """
 Place pieces on the board.
->>> from blokus import Board
+>>> from board import Board
 >>> Board.size = 5
 >>> board = Board()
 >>> from pieces import five_f
