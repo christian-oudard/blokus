@@ -40,7 +40,34 @@ class Board:
         .XOO.
         ...OO
         ...O.
+
+        Cannot place a piece on top of another piece.
+        >>> Board.size = 3
+        >>> board = Board()
+        >>> from pieces import four_o
+        >>> board.place_piece(four_o, (0, 0), 'X')
+        >>> print(board)
+        XX.
+        XX.
+        ...
+        >>> board.place_piece(four_o, (1, 0), 'O')
+        Traceback (most recent call last):
+            ...
+        ValueError: Overlapping pieces
+        >>> print(board)
+        XX.
+        XX.
+        ...
+
+        Cannot place a piece next to another piece of your color.
+        STUB
+
+        Your pieces must connect at the corners.
+        STUB
         """
         x, y = position
         for px, py in piece._points:
-            self.data[(px + x, py + y)] = color
+            point = px + x, py + y
+            if point in self.data:
+                raise ValueError('Overlapping pieces')
+            self.data[point] = color
