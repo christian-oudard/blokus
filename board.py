@@ -2,7 +2,7 @@ from poly import translate, adjacencies, corner_adjacencies
 
 class Board:
     _empty = '.'
-    _start = 'o'
+    _start = '_'
     size = 14
     start_points = (
         (4, 4),

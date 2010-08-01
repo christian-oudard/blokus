@@ -120,25 +120,25 @@ X,,,
 You must start on a designated start point.
 >>> Board.size = 4
 >>> Board.start_points = ((0, 0), (3, 3))
->>> Board._start = 'o'
+>>> Board._start = '_'
 >>> board = Board()
 >>> print(board)
-o,,,
+_,,,
 ,,,,
 ,,,,
-,,,o
+,,,_
 >>> board.place_piece(four_o, (0, 2), 'X')
 Traceback (most recent call last):
     ...
 ValueError: Must play on a start point
 >>> print(board)
-o,,,
+_,,,
 ,,,,
 ,,,,
-,,,o
+,,,_
 >>> board.place_piece(four_o, (2, 2), 'X')
 >>> print(board)
-o,,,
+_,,,
 ,,,,
 ,,XX
 ,,XX
