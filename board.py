@@ -1,9 +1,10 @@
 from poly import translate, adjacencies, corner_adjacencies
 
-_empty = '.'
 class Board:
+    _empty = '.'
+    _start = 'o'
     size = 14
-    start_positions = (
+    start_points = (
         (4, 4),
         (9, 9),
     )
@@ -11,7 +12,12 @@ class Board:
         self.data = {}
 
     def __str__(self):
-        grid = [[_empty for _ in range(self.size)] for _ in range(self.size)]
+        grid = [[self._empty for _ in range(self.size)] for _ in range(self.size)]
+        for x, y in self.start_points:
+            try:
+                grid[y][x] = self._start
+            except IndexError:
+                pass
         for point, color in self.data.items():
             x, y = point
             grid[y][x] = color
@@ -22,23 +28,31 @@ class Board:
 
     def place_piece(self, piece, position, color):
         points = list(translate(piece._points, *position))
-
+        # Check bounds.
+        for x, y in points:
+            if x < 0 or y < 0 or  x >= self.size or y >= self.size:
+                raise ValueError('Piece out of bounds')
+        # Check overlaps
+        for point in points:
+            if point in self.data.keys():
+                raise ValueError('Overlapping pieces')
+        # Check adjacencies.
         for adj in adjacencies(points):
             if self.data.get(adj) == color:
                 raise ValueError('Cannot play next to a piece of the same color')
 
         if self.is_first(color):
-            pass #STUB, must play on a start position
-        elif not any(
-            self.data.get(corner) == color
-            for corner in corner_adjacencies(points)
-        ):
-            raise ValueError('Must play with corners touching a piece of the same color')
+            # Check start points.
+            if not any(p in self.start_points for p in points):
+                raise ValueError('Must play on a start point')
+        else:
+            # Check corner connections.
+            if not any(
+                self.data.get(corner) == color
+                for corner in corner_adjacencies(points)
+            ):
+                raise ValueError('Must play with corners touching a piece of the same color')
 
+        # All checks pass, place the piece.
         for point in points:
-            x, y = point
-            if x < 0 or y < 0 or  x >= self.size or y >= self.size:
-                raise ValueError('Piece out of bounds')
-            if point in self.data:
-                raise ValueError('Overlapping pieces')
             self.data[point] = color
