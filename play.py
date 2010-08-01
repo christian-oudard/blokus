@@ -7,11 +7,12 @@ from board import Board
 
 if __name__ == '__main__':
     import human
+    import bot_simple
 
     players = ['X', 'O']
     player_interfaces = {
-        'X': human,
-        'O': human,
+        'X': bot_simple,
+        'O': bot_simple,
     }
     player_pieces = {
         'X': deepcopy(all_pieces),
@@ -20,8 +21,15 @@ if __name__ == '__main__':
 
     board = Board()
 
+    pass_count = 0
     for player in itertools.cycle(players):
-        piece, location = player_interfaces[player].move(board, player, player_pieces)
+        move = player_interfaces[player].move(board, player, player_pieces)
+        if move is None: # Player passes
+            pass_count += 1
+            if pass_count >= len(players):
+                break
+            continue
+        piece, location = move
         available_pieces = player_pieces[player]
         c_piece = piece.canonical()
         if c_piece in available_pieces:
@@ -29,3 +37,20 @@ if __name__ == '__main__':
         else:
             raise ValueError('Piece not available.')
         board.place_piece(piece, location, player)
+        print(board)
+        print()
+
+    scores = {}
+    for player in players:
+        remaining = player_pieces[player]
+        scores[player] = sum(len(piece._points) for piece in remaining)
+
+    print('game over')
+    print('scores:')
+    for player, score in scores.items():
+        print('{} - {}'.format(player, score))
+
+    min_score = min(scores.values())
+    for player, score in scores.items():
+        if score == min_score:
+            print('winner:', player)

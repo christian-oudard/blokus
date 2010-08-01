@@ -30,7 +30,9 @@ class Board:
         return not any(v == color for v in self.data.values())
 
     def place_piece(self, piece, position, color):
-        self._check_place_piece(piece, position, color)
+        reason = self._check_place_piece(piece, position, color)
+        if reason:
+            raise ValueError(reason)
         self._place_piece(piece, position, color)
 
     def _place_piece(self, piece, position, color):
@@ -43,24 +45,35 @@ class Board:
         # Check bounds.
         for x, y in points:
             if x < 0 or y < 0 or  x >= self.size or y >= self.size:
-                raise ValueError('Piece out of bounds')
+                return 'Piece out of bounds'
         # Check overlaps
         for point in points:
             if point in self.data.keys():
-                raise ValueError('Overlapping pieces')
+                return 'Overlapping pieces'
         # Check adjacencies.
         for adj in adjacencies(points):
             if self.data.get(adj) == color:
-                raise ValueError('Cannot play next to a piece of the same color')
+                return 'Cannot play next to a piece of the same color'
 
         if self.is_first(color):
             # Check start points.
             if not any(p in self.start_points for p in points):
-                raise ValueError('Must play on a start point')
+                return 'Must play on a start point'
         else:
             # Check corner connections.
             if not any(
                 self.data.get(corner) == color
                 for corner in corner_adjacencies(points)
             ):
-                raise ValueError('Must play with corners touching a piece of the same color')
+                return 'Must play with corners touching a piece of the same color'
+
+        return None # No problems
+
+    def legal_moves(self, player, pieces):
+        for c_piece in pieces:
+            for piece in c_piece.orientations():
+                for x in range(self.size):
+                    for y in range(self.size):
+                        location = x, y
+                        if self._check_place_piece(piece, location, player) is None:
+                            yield piece, location
