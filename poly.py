@@ -38,7 +38,8 @@ class Poly:
         return hash((self.__class__, self._points))
 
     def __lt__(self, other):
-        return self._points < other._points
+        return ((len(self._points), self._points) <
+                (len(other._points), other._points))
 
     def canonical(self):
         """

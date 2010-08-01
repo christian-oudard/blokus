@@ -1,15 +1,10 @@
 from poly import Poly, gen_polys
 
-max_size = 5
+_max_size = 5
 all_pieces = []
-for size in range(1, max_size + 1):
+for size in range(1, _max_size + 1):
     all_pieces.extend(gen_polys(size))
-all_pieces.sort(key=lambda p: (len(p._points), p))
-
-#for i, p in enumerate(all_pieces):
-#    print()
-#    print(i + 1)
-#    print(p)
+all_pieces.sort()
 
 _empty = '.'
 class Board:
