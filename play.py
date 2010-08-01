@@ -8,11 +8,13 @@ from board import Board
 if __name__ == '__main__':
     import human
     import bot_simple
+    import bot_random
+    import bot_biggest
 
     players = ['X', 'O']
     player_interfaces = {
-        'X': bot_simple,
-        'O': bot_simple,
+        'X': bot_random,
+        'O': bot_biggest,
     }
     player_pieces = {
         'X': deepcopy(all_pieces),
