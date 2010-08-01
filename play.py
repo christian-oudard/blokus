@@ -10,10 +10,11 @@ if __name__ == '__main__':
     import bot_simple
     import bot_random
     import bot_biggest
+    import bot_center
 
     players = ['X', 'O']
     player_interfaces = {
-        'X': bot_random,
+        'X': bot_center,
         'O': bot_biggest,
     }
     player_pieces = {
@@ -50,9 +51,9 @@ if __name__ == '__main__':
     print('game over')
     print('scores:')
     for player, score in scores.items():
-        print('{} - {}'.format(player, score))
+        print('{} ({}) - {}'.format(player_interfaces[player].__name__, player, score))
 
     min_score = min(scores.values())
     for player, score in scores.items():
         if score == min_score:
-            print('winner:', player)
+            print('winner:', player_interfaces[player].__name__)
