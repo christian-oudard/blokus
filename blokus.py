@@ -1,11 +1,3 @@
-from poly import Poly, gen_polys
-
-_max_size = 5
-all_pieces = []
-for size in range(1, _max_size + 1):
-    all_pieces.extend(gen_polys(size))
-all_pieces.sort()
-
 _empty = '.'
 class Board:
     size = 14
@@ -13,7 +5,7 @@ class Board:
         self.data = {}
 
     def __str__(self):
-        grid = [[_empty for _ in range(size)] for _ in range(size)]
+        grid = [[_empty for _ in range(self.size)] for _ in range(self.size)]
         for point, color in self.data.items():
             x, y = point
             grid[y][x] = color
@@ -24,7 +16,8 @@ class Board:
         Place a piece on the board.
         >>> Board.size = 5
         >>> board = Board()
-        >>> a, b = sorted(all_pieces[17].orientations())[:2]
+        >>> from pieces import five_f
+        >>> a, b = sorted(five_f.orientations())[:2]
         >>> print(a)
         #
         ###
