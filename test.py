@@ -60,7 +60,22 @@ XX.
 ...
 
 Cannot place a piece next to another piece of your color.
-STUB
+>>> Board.size = 3
+>>> board = Board()
+>>> from pieces import two_i
+>>> board.place_piece(two_i, (0, 0), 'X')
+>>> print(board)
+X..
+X..
+...
+>>> board.place_piece(two_i, (1, 0), 'X')
+Traceback (most recent call last):
+    ...
+ValueError: Cannot play next to a piece of the same color.
+>>> print(board)
+X..
+X..
+...
 
 Your pieces must connect at the corners.
 STUB

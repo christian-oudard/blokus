@@ -1,4 +1,4 @@
-from poly import translate
+from poly import translate, adjacencies
 
 _empty = '.'
 class Board:
@@ -15,6 +15,9 @@ class Board:
 
     def place_piece(self, piece, position, color):
         points = list(translate(piece._points, *position))
+        for adj in adjacencies(points):
+            if self.data.get(adj) == color:
+                raise ValueError('Cannot play next to a piece of the same color.')
         for point in points:
             x, y = point
             if x < 0 or y < 0 or  x >= self.size or y >= self.size:
