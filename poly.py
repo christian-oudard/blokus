@@ -27,6 +27,9 @@ class Poly:
             grid[y][x] = self._block_char
         return '\n'.join(''.join(line).rstrip() for line in grid)
 
+    def __len__(self):
+        return len(self._points)
+
     def __eq__(self, other):
         return self._points == other._points
 
@@ -38,8 +41,8 @@ class Poly:
         return hash((self.__class__, self._points))
 
     def __lt__(self, other):
-        return ((len(self._points), self._points) <
-                (len(other._points), other._points))
+        return ((len(self), self._points) <
+                (len(other), other._points))
 
     def canonical(self):
         """

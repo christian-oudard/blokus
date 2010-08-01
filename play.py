@@ -43,7 +43,7 @@ if __name__ == '__main__':
     scores = {}
     for player in players:
         remaining = player_pieces[player]
-        scores[player] = sum(len(piece._points) for piece in remaining)
+        scores[player] = sum(len(piece) for piece in remaining)
 
     print('game over')
     print('scores:')
