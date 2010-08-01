@@ -1,3 +1,5 @@
+from poly import translate
+
 _empty = '.'
 class Board:
     size = 14
@@ -12,9 +14,9 @@ class Board:
         return '\n'.join(''.join(line) for line in grid)
 
     def place_piece(self, piece, position, color):
-        ox, oy = position
-        for px, py in piece._points:
-            point = x, y = ox + px, oy + py
+        points = list(translate(piece._points, *position))
+        for point in points:
+            x, y = point
             if x < 0 or y < 0 or  x >= self.size or y >= self.size:
                 raise ValueError('Piece out of bounds')
             if point in self.data:

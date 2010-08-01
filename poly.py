@@ -7,7 +7,7 @@ class Poly:
         # Translate points to origin.
         min_x = min(x for x, y in points)
         min_y = min(y for x, y in points)
-        self._points = tuple((x - min_x, y - min_y) for x, y in points)
+        self._points = tuple(translate(points, -min_x, -min_y))
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self._points)
@@ -124,21 +124,13 @@ class Poly:
             mirrors.append(Poly((x, -y) for x, y in r._points))
         return set(rotations + mirrors)
 
-    def adjacencies(self):
-        """
-        >>> p = Poly([(0, 0), (1, 0)])
-        >>> sorted(p.adjacencies())
-        [(-1, 0), (0, -1), (0, 1), (1, -1), (1, 1), (2, 0)]
-        """
-        for point in self._points:
-            for adj in adjacent(point):
-                if adj not in self._points:
-                    yield adj
+def translate(points, tx, ty):
+    for x, y in points:
+        yield x + tx, y + ty
 
-
-def adjacent(point):
+def _adjacent(point):
     """
-    >>> sorted(adjacent((1, 1)))
+    >>> sorted(_adjacent((1, 1)))
     [(0, 1), (1, 0), (1, 2), (2, 1)]
     """
     x, y = point
@@ -146,6 +138,18 @@ def adjacent(point):
     yield (x + 1, y)
     yield (x, y - 1)
     yield (x, y + 1)
+
+def adjacencies(points):
+    """
+    >>> points = [(0, 0), (1, 0)]
+    >>> sorted(adjacencies(points))
+    [(-1, 0), (0, -1), (0, 1), (1, -1), (1, 1), (2, 0)]
+    """
+    points = set(points)
+    for point in points:
+        for adj in _adjacent(point):
+            if adj not in points:
+                yield adj
 
 def gen_polys(generation):
     """
@@ -194,7 +198,8 @@ def gen_polys(generation):
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
-        for adj in poly.adjacencies():
-            new_poly = Poly(poly._points + (adj,))
+        points = poly._points
+        for adj in adjacencies(points):
+            new_poly = Poly(points + (adj,))
             new_polys.add(new_poly.canonical())
     return new_polys
