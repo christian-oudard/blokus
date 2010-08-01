@@ -9,7 +9,7 @@ all_pieces.sort()
 one = Poly([(0, 0),])
 #
 
-two_i = Poly([(0, 0), (0, 1)])
+two = Poly([(0, 0), (0, 1)])
 #
 #
 
@@ -106,5 +106,15 @@ five_z = Poly([(0, 0), (0, 1), (1, 1), (2, 1), (2, 2)])
 
 five_x = Poly([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)])
  #
-    ###
-     #
+###
+ #
+
+# Put them in an index dictionary too.
+piece_to_name = {}
+name_to_piece = {}
+for k, v in dict(locals()).items():
+    if isinstance(v, Poly):
+        name_to_piece[k] = v
+        piece_to_name[v] = k
+assert len(name_to_piece) == len(all_pieces)
+assert len(piece_to_name) == len(all_pieces)

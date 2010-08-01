@@ -20,13 +20,25 @@ class Board:
                 pass
         for point, color in self.data.items():
             x, y = point
-            grid[y][x] = color
+            try:
+                grid[y][x] = color
+            except IndexError:
+                pass
         return '\n'.join(''.join(line) for line in grid)
 
     def is_first(self, color):
         return not any(v == color for v in self.data.values())
 
     def place_piece(self, piece, position, color):
+        self._check_place_piece(piece, position, color)
+        self._place_piece(piece, position, color)
+
+    def _place_piece(self, piece, position, color):
+        points = list(translate(piece._points, *position))
+        for point in points:
+            self.data[point] = color
+
+    def _check_place_piece(self, piece, position, color):
         points = list(translate(piece._points, *position))
         # Check bounds.
         for x, y in points:
@@ -52,7 +64,3 @@ class Board:
                 for corner in corner_adjacencies(points)
             ):
                 raise ValueError('Must play with corners touching a piece of the same color')
-
-        # All checks pass, place the piece.
-        for point in points:
-            self.data[point] = color
