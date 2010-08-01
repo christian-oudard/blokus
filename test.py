@@ -1,6 +1,6 @@
 """
 >>> from board import Board
->>> from pieces import two_i, four_o, five_f
+>>> from pieces import two, four_o, five_f
 
 For testing purposes, count everything as a start point.
 Three or more dots has special meaning to doctest, use comma for empty squares
@@ -78,12 +78,12 @@ XX,
 Cannot place a piece next to another piece of your color.
 >>> Board.size = 3
 >>> board = Board()
->>> board.place_piece(two_i, (0, 0), 'X')
+>>> board.place_piece(two, (0, 0), 'X')
 >>> print(board)
 X,,
 X,,
 ,,,
->>> board.place_piece(two_i, (1, 1), 'X')
+>>> board.place_piece(two, (1, 1), 'X')
 Traceback (most recent call last):
     ...
 ValueError: Cannot play next to a piece of the same color
@@ -95,7 +95,7 @@ X,,
 Your pieces must connect at the corners.
 >>> Board.size = 4
 >>> board = Board()
->>> board.place_piece(two_i, (0, 0), 'X')
+>>> board.place_piece(two, (0, 0), 'X')
 >>> print(board)
 X,,,
 X,,,
