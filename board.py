@@ -1,4 +1,4 @@
-from poly import translate, adjacencies
+from poly import translate, adjacencies, corner_adjacencies
 
 _empty = '.'
 class Board:
@@ -13,11 +13,16 @@ class Board:
             grid[y][x] = color
         return '\n'.join(''.join(line) for line in grid)
 
-    def place_piece(self, piece, position, color):
+    def place_piece(self, piece, position, color, first=False):
         points = list(translate(piece._points, *position))
         for adj in adjacencies(points):
             if self.data.get(adj) == color:
-                raise ValueError('Cannot play next to a piece of the same color.')
+                raise ValueError('Cannot play next to a piece of the same color')
+        if not first and not any(
+            self.data.get(corner) == color
+            for corner in corner_adjacencies(points)
+        ):
+            raise ValueError('Must play with corners touching a piece of the same color')
         for point in points:
             x, y = point
             if x < 0 or y < 0 or  x >= self.size or y >= self.size:

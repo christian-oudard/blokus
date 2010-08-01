@@ -1,9 +1,10 @@
 """
-Place pieces on the board.
 >>> from board import Board
+>>> from pieces import two_i, four_o, five_f
+
+Place pieces on the board.
 >>> Board.size = 5
 >>> board = Board()
->>> from pieces import five_f
 >>> a, b = sorted(five_f.orientations())[:2]
 >>> print(a)
 #
@@ -13,14 +14,14 @@ Place pieces on the board.
 ##
  ##
  #
->>> board.place_piece(a, (0, 0), 'X')
+>>> board.place_piece(a, (0, 0), 'X', first=True)
 >>> print(board)
 X....
 XXX..
 .X...
 .....
 .....
->>> board.place_piece(b, (2, 2), 'O')
+>>> board.place_piece(b, (2, 2), 'O', first=True)
 >>> print(board)
 X....
 XXX..
@@ -28,16 +29,15 @@ XXX..
 ...OO
 ...O.
 
->>> from pieces import four_o
 
 Cannot place a piece off the board.
 >>> Board.size = 3
 >>> board = Board()
->>> board.place_piece(four_o, (-1, -1), 'X')
+>>> board.place_piece(four_o, (-1, -1), 'X', first=True)
 Traceback (most recent call last):
     ...
 ValueError: Piece out of bounds
->>> board.place_piece(four_o, (2, 2), 'X')
+>>> board.place_piece(four_o, (2, 2), 'X', first=True)
 Traceback (most recent call last):
     ...
 ValueError: Piece out of bounds
@@ -45,12 +45,12 @@ ValueError: Piece out of bounds
 Cannot place a piece on top of another piece.
 >>> Board.size = 3
 >>> board = Board()
->>> board.place_piece(four_o, (0, 0), 'X')
+>>> board.place_piece(four_o, (0, 0), 'X', first=True)
 >>> print(board)
 XX.
 XX.
 ...
->>> board.place_piece(four_o, (1, 0), 'O')
+>>> board.place_piece(four_o, (1, 0), 'O', first=True)
 Traceback (most recent call last):
     ...
 ValueError: Overlapping pieces
@@ -62,21 +62,42 @@ XX.
 Cannot place a piece next to another piece of your color.
 >>> Board.size = 3
 >>> board = Board()
->>> from pieces import two_i
->>> board.place_piece(two_i, (0, 0), 'X')
+>>> board.place_piece(two_i, (0, 0), 'X', first=True)
 >>> print(board)
 X..
 X..
 ...
->>> board.place_piece(two_i, (1, 0), 'X')
+>>> board.place_piece(two_i, (1, 1), 'X')
 Traceback (most recent call last):
     ...
-ValueError: Cannot play next to a piece of the same color.
+ValueError: Cannot play next to a piece of the same color
 >>> print(board)
 X..
 X..
 ...
 
 Your pieces must connect at the corners.
-STUB
+>>> Board.size = 4
+>>> board = Board()
+>>> board.place_piece(two_i, (0, 0), 'X', first=True)
+>>> print(board)
+X...
+X...
+....
+....
+>>> board.place_piece(four_o, (2, 0), 'X')
+Traceback (most recent call last):
+    ...
+ValueError: Must play with corners touching a piece of the same color
+>>> print(board)
+X...
+X...
+....
+....
+>>> board.place_piece(four_o, (1, 2), 'X')
+>>> print(board)
+X...
+X...
+.XX.
+.XX.
 """

@@ -128,17 +128,6 @@ def translate(points, tx, ty):
     for x, y in points:
         yield x + tx, y + ty
 
-def _adjacent(point):
-    """
-    >>> sorted(_adjacent((1, 1)))
-    [(0, 1), (1, 0), (1, 2), (2, 1)]
-    """
-    x, y = point
-    yield (x - 1, y)
-    yield (x + 1, y)
-    yield (x, y - 1)
-    yield (x, y + 1)
-
 def adjacencies(points):
     """
     >>> points = [(0, 0), (0, 1), (1, 0)]
@@ -155,11 +144,46 @@ def adjacencies(points):
      #
     """
     points = set(points)
-    for point in list(points):
-        for adj in _adjacent(point):
+    for x, y in list(points):
+        for adj in [
+            (x - 1, y),
+            (x + 1, y),
+            (x, y - 1),
+            (x, y + 1),
+        ]:
             if adj not in points:
                 yield adj
                 points.add(adj)
+
+def corner_adjacencies(points):
+    """
+    >>> points = [(0, 0), (1, 0), (1, 1), (2, 1)]
+    >>> print(Poly(points))
+    ##
+     ##
+    >>> adjs = list(corner_adjacencies(points))
+    >>> len(adjs)
+    6
+    >>> print(Poly(adjs))
+    #  #
+        #
+    #
+     #  #
+    """
+    adjs = set(adjacencies(points))
+    points = set(points)
+    for x, y in list(points):
+        for adj in [
+            (x - 1, y - 1),
+            (x - 1, y + 1),
+            (x + 1, y - 1),
+            (x + 1, y + 1),
+        ]:
+            if adj not in points and \
+               adj not in adjs:
+                yield adj
+                points.add(adj)
+
 
 def gen_polys(generation):
     """
