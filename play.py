@@ -27,6 +27,8 @@ def play_game(a, b, verbose=False):
             if pass_count >= len(players):
                 break
             continue
+        else:
+            pass_count = 0
         piece, location = move
         available_pieces = player_pieces[player]
         c_piece = piece.canonical()
