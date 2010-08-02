@@ -94,5 +94,6 @@ if __name__ == '__main__':
     import bot_center
     import bot_biggest_center
     import bot_corners
+    import bot_space
 
-    play_match(bot_corners, bot_biggest_center, 4, verbose=True)
+    play_match(bot_space, bot_null, 10, verbose=True)
