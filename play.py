@@ -87,6 +87,7 @@ def play_match(a, b, num_games, verbose=False):
 
 if __name__ == '__main__':
     import human
+    import bot_null
     import bot_simple
     import bot_random
     import bot_biggest
