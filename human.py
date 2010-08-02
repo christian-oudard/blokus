@@ -12,23 +12,27 @@ def display_board(board, player):
         'X': orange,
         'O': purple,
     }
-    empty_color = gray(5)
+    dark_gray = gray(5)
+    light_gray = gray(15)
+    black = gray(0)
 
     print('+' + '='*board.size*2 + '+')
     for y in range(board.size):
         print('|', end='')
         for x in range(board.size):
             d = board.data.get((x, y))
-            color = colors.get(d, empty_color)
-            if (x, y) in board.start_points:
+            bg = colors.get(d, dark_gray)
+            fg = light_gray
+            if (x, y) in board.start_points and d is None:
                 s = '()'
             else:
                 s = '  '
             if d in ['#', '@']:
-                color = colors[player]
+                bg = colors[player]
             if d == '#':
                 s = '><'
-            print_color(s, bg=color, end='')
+                fg = black
+            print_color(s, bg=bg, fg=fg, end='')
         print('|')
 
     print('+' + '='*board.size*2 + '+')
@@ -79,15 +83,16 @@ def move(board, player, player_pieces):
     location = board.size // 2, board.size // 2
     while True:
         temp_board = deepcopy(board)
-        try:
-            temp_board._check_place_piece(piece, location, player)
-        except ValueError as e:
-            print(e)
+        reason = temp_board._check_place_piece(piece, location, player)
+        if reason is not None:
             color = '#'
         else:
             color = '@'
         temp_board._place_piece(piece, location, color)
         display_board(temp_board, player)
+
+        if reason is not None:
+            print('** {} **'.format(reason))
 
         print('Use arrow keys to move piece. Press space bar to change orientation. Press Enter to confirm, or escape to go back (STUB).')
 
@@ -121,5 +126,5 @@ def move(board, player, player_pieces):
 
         # Confirm.
         if command == '\r': # Enter key
-            return piece, location
-
+            if reason is None:
+                return piece, location
