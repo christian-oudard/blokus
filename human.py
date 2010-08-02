@@ -62,7 +62,12 @@ def move(board, player, player_pieces):
     # Choose piece.
     my_pieces = player_pieces[player]
     while True:
-        name = get_input('piece? >')
+        print('Available pieces:',
+              ', '.join(piece_to_name[p] for p in player_pieces[player]))
+        name = get_input('Choose a piece, or type "pass":')
+        name = name.lower()
+        if name == 'pass':
+            return None
         piece = name_to_piece.get(name)
         if not piece:
             print('Piece name not recognized.')
@@ -71,8 +76,6 @@ def move(board, player, player_pieces):
             print('You have already played this piece.')
         else:
             break
-        print('Available pieces:',
-              ', '.join(piece_to_name[p] for p in player_pieces[player]))
 
     # Choose orientation.
     orientations = sorted(piece.orientations())
@@ -94,7 +97,8 @@ def move(board, player, player_pieces):
         if reason is not None:
             print('** {} **'.format(reason))
 
-        print('Use arrow keys to move piece. Press space bar to change orientation. Press Enter to confirm, or escape to go back (STUB).')
+        print('Use arrow keys to move piece. Press space bar to change orientation.')
+        print('Press Enter to confirm move.')
 
         command = getch_arrow()
 
