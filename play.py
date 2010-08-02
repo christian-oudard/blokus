@@ -92,6 +92,7 @@ if __name__ == '__main__':
     import bot_random
     import bot_biggest
     import bot_center
+    import bot_biggest_center
 
-    #play_match(bot_center, bot_biggest, 4, verbose=True)
-    play_game(human, bot_biggest, verbose=True)
+    play_match(bot_biggest_center, bot_simple, 1, verbose=True)
+    #play_game(human, bot_biggest, verbose=True)
