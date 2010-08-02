@@ -3,11 +3,37 @@ from copy import deepcopy
 from getch import getch, getch_arrow
 from pieces import piece_to_name, name_to_piece
 
-def display_board(board):
-    print('+' + '='*board.size + '+')
-    for line in str(board).split('\n'):
-        print('|' + line + '|')
-    print('+' + '='*board.size + '+')
+def display_board(board, player):
+    from term_colors import print_color, rgb, gray
+
+    orange = rgb(5, 2, 0)
+    purple = rgb(3, 0, 4)
+    colors = {
+        'X': orange,
+        'O': purple,
+    }
+    empty_color = gray(5)
+
+    print('+' + '='*board.size*2 + '+')
+    for y in range(board.size):
+        print('|', end='')
+        for x in range(board.size):
+            d = board.data.get((x, y))
+            color = colors.get(d, empty_color)
+            if (x, y) in board.start_points:
+                s = '()'
+            else:
+                s = '  '
+            if d in ['#', '@']:
+                color = colors[player]
+            if d == '#':
+                s = '><'
+            print_color(s, bg=color, end='')
+        print('|')
+
+    print('+' + '='*board.size*2 + '+')
+
+
 
 def get_input(prompt):
     if not prompt[-1].isspace():
@@ -27,7 +53,7 @@ def get_input(prompt):
 def move(board, player, player_pieces):
     print("{}'s turn.".format(player))
 
-    display_board(board)
+    display_board(board, player)
 
     # Choose piece.
     my_pieces = player_pieces[player]
@@ -61,7 +87,7 @@ def move(board, player, player_pieces):
         else:
             color = '@'
         temp_board._place_piece(piece, location, color)
-        display_board(temp_board)
+        display_board(temp_board, player)
 
         print('Use arrow keys to move piece. Press space bar to change orientation. Press Enter to confirm, or escape to go back (STUB).')
 
