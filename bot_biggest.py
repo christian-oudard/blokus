@@ -1,6 +1,3 @@
-import random
-from collections import defaultdict
-
 def evaluate(board, piece, location):
     # Score by the size of the piece.
     return len(piece)
