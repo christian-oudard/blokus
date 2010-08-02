@@ -93,6 +93,6 @@ if __name__ == '__main__':
     import bot_biggest
     import bot_center
     import bot_biggest_center
+    import bot_corners
 
-    play_match(bot_biggest_center, bot_simple, 1, verbose=True)
-    #play_game(human, bot_biggest, verbose=True)
+    play_match(bot_corners, bot_biggest_center, 4, verbose=True)

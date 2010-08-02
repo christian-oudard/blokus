@@ -43,8 +43,8 @@ class Board:
     def _check_place_piece(self, piece, position, color):
         points = list(translate(piece._points, *position))
         # Check bounds.
-        for x, y in points:
-            if x < 0 or y < 0 or  x >= self.size or y >= self.size:
+        for point in points:
+            if not self.in_bounds(point):
                 return 'Piece out of bounds'
         # Check overlaps
         for point in points:
@@ -77,3 +77,8 @@ class Board:
                         location = x, y
                         if self._check_place_piece(piece, location, player) is None:
                             yield piece, location
+
+    def in_bounds(self, point):
+        x, y = point
+        return (x >= 0 and y >= 0 and
+                x < self.size and y < self.size)
