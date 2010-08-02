@@ -37,8 +37,6 @@ def display_board(board, player):
 
     print('+' + '='*board.size*2 + '+')
 
-
-
 def get_input(prompt):
     if not prompt[-1].isspace():
         prompt += ' '
@@ -54,35 +52,27 @@ def get_input(prompt):
             if confirmation.lower().startswith('y'):
                 sys.exit()
 
-def move(board, player, player_pieces):
-    print("{}'s turn.".format(player))
-
-    display_board(board, player)
-
-    # Choose piece.
-    my_pieces = player_pieces[player]
+def choose_piece(my_pieces):
     while True:
         print('Available pieces:',
-              ', '.join(piece_to_name[p] for p in player_pieces[player]))
+              ', '.join(piece_to_name[p] for p in my_pieces))
         name = get_input('Choose a piece, or type "pass":')
         name = name.lower()
         if name == 'pass':
-            return None
+            return 'pass'
         piece = name_to_piece.get(name)
         if not piece:
             print('Piece name not recognized.')
         elif piece not in my_pieces:
-            piece = None
             print('You have already played this piece.')
         else:
-            break
+            return piece
 
-    # Choose orientation.
+def choose_placement(board, piece, player):
     orientations = sorted(piece.orientations())
     piece = orientations[0]
     o_index = 0
 
-    # Place piece
     location = board.size // 2, board.size // 2
     while True:
         temp_board = deepcopy(board)
@@ -98,9 +88,10 @@ def move(board, player, player_pieces):
             print('** {} **'.format(reason))
 
         print('Use arrow keys to move piece. Press space bar to change orientation.')
-        print('Press Enter to confirm move.')
+        print('Press Enter to confirm move, or backspace to go back.')
 
         command = getch_arrow()
+        print(repr(command))
 
         if command == '\x03': # Ctrl-C
             raise KeyboardInterrupt()
@@ -125,10 +116,26 @@ def move(board, player, player_pieces):
             piece = orientations[o_index]
 
         # Go back.
-        if command == '\x1b': # Escape key
-            pass #STUB, go back to piece selection.
+        if command == '\x7f': # Backspace key
+            return None, None # Go back to piece selection.
 
         # Confirm.
         if command == '\r': # Enter key
             if reason is None:
                 return piece, location
+
+def move(board, player, player_pieces):
+    print("{}'s turn.".format(player))
+
+    while True:
+        display_board(board, player)
+
+        piece = choose_piece(player_pieces[player])
+        if piece == 'pass':
+            return None
+
+        piece, location = choose_placement(board, piece, player)
+        if piece is None:
+            continue # User chose to re-choose piece.
+
+        return piece, location

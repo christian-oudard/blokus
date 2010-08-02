@@ -31,7 +31,7 @@ class Poly:
         return len(self._points)
 
     def __eq__(self, other):
-        return self._points == other._points
+        return isinstance(other, Poly) and self._points == other._points
 
     def __hash__(self):
         """
