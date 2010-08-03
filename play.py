@@ -90,6 +90,7 @@ if __name__ == '__main__':
     import bot_simple
     import bot_random
     import bot_biggest
+    import bot_squarecenter
     import bot_center
     import bot_corners
     import bot_efficiency
@@ -101,6 +102,7 @@ if __name__ == '__main__':
         bot_random,
         bot_biggest,
         bot_center,
+        bot_squarecenter,
         bot_corners,
         bot_efficiency,
     ]
