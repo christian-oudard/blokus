@@ -29,19 +29,17 @@ class Board:
     def is_first(self, color):
         return not any(v == color for v in self.data.values())
 
-    def place_piece(self, piece, position, color):
-        reason = self._check_place_piece(piece, position, color)
+    def place_piece(self, piece, color):
+        reason = self._check_place_piece(piece, color)
         if reason:
             raise ValueError(reason)
-        self._place_piece(piece, position, color)
+        self._place_piece(piece, color)
 
-    def _place_piece(self, piece, position, color):
-        piece = piece.translated(*position)
+    def _place_piece(self, piece, color):
         for point in piece:
             self.data[point] = color
 
-    def _check_place_piece(self, piece, position, color):
-        piece = piece.translated(*position)
+    def _check_place_piece(self, piece, color):
         # Check bounds.
         for point in piece:
             if not self.in_bounds(point):
@@ -75,7 +73,9 @@ class Board:
                 for x in range(self.size):
                     for y in range(self.size):
                         location = x, y
-                        if self._check_place_piece(piece, location, player) is None:
+                        t_piece = piece.translated(location)
+                        reason = self._check_place_piece(piece, player)
+                        if reason is None:
                             yield piece, location
 
     def in_bounds(self, point):
