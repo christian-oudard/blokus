@@ -91,9 +91,7 @@ if __name__ == '__main__':
     import bot_random
     import bot_biggest
     import bot_center
-    import bot_biggest_center
     import bot_corners
-    import bot_space
     import bot_efficiency
 
     bots = [
@@ -103,9 +101,7 @@ if __name__ == '__main__':
         bot_random,
         bot_biggest,
         bot_center,
-        bot_biggest_center,
         bot_corners,
-        bot_space,
         bot_efficiency,
     ]
 
