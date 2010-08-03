@@ -3,11 +3,7 @@
 class Poly:
     def __init__(self, points):
         # Give points a predictable order.
-        points = sorted(points)
-        # Translate points to origin.
-        min_x = min(x for x, y in points)
-        min_y = min(y for x, y in points)
-        self._points = tuple(translate(points, -min_x, -min_y))
+        self._points = tuple(sorted(points))
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self._points)
@@ -43,6 +39,14 @@ class Poly:
     def __lt__(self, other):
         return ((len(self), self._points) <
                 (len(other), other._points))
+
+    def translate_origin(self):
+        min_x = min(x for x, y in self._points)
+        min_y = min(y for x, y in self._points)
+        return self.translated(-min_x, -min_y)
+
+    def translated(self, x, y):
+        return Poly(translate(self._points, x, y))
 
     def canonical(self):
         """
@@ -125,7 +129,9 @@ class Poly:
         mirrors = []
         for r in rotations:
             mirrors.append(Poly((x, -y) for x, y in r._points))
-        return set(rotations + mirrors)
+        orientations = rotations + mirrors
+        orientations = set(p.translate_origin() for p in orientations)
+        return orientations
 
 def translate(points, tx, ty):
     for x, y in points:
@@ -140,7 +146,7 @@ def adjacencies(points):
     >>> adjs = list(adjacencies(points))
     >>> len(adjs)
     7
-    >>> print(Poly(adjs))
+    >>> print(Poly(adjs).translate_origin())
      ##
     #  #
     # #
@@ -167,7 +173,7 @@ def corner_adjacencies(points):
     >>> adjs = list(corner_adjacencies(points))
     >>> len(adjs)
     6
-    >>> print(Poly(adjs))
+    >>> print(Poly(adjs).translate_origin())
     #  #
         #
     #

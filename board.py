@@ -1,3 +1,4 @@
+from collections import defaultdict
 from poly import translate, adjacencies, corner_adjacencies
 
 class Board:
@@ -36,8 +37,8 @@ class Board:
         self._place_piece(piece, position, color)
 
     def _place_piece(self, piece, position, color):
-        points = list(translate(piece._points, *position))
-        for point in points:
+        piece = piece.translated(*position)
+        for point in piece._points:
             self.data[point] = color
 
     def _check_place_piece(self, piece, position, color):
