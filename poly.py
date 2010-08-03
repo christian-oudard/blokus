@@ -153,12 +153,7 @@ class Poly:
         """
         points = set(self)
         for x, y in list(points):
-            for adj in [
-                (x - 1, y),
-                (x + 1, y),
-                (x, y - 1),
-                (x, y + 1),
-            ]:
+            for adj in adjacent((x, y)):
                 if adj not in points:
                     yield adj
                     points.add(adj)
@@ -245,3 +240,12 @@ def gen_polys(generation):
             new_poly = Poly(points + (adj,))
             new_polys.add(new_poly.canonical())
     return new_polys
+
+def adjacent(point):
+    x, y = point
+    return [
+        (x - 1, y),
+        (x + 1, y),
+        (x, y - 1),
+        (x, y + 1),
+    ]
