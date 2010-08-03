@@ -95,4 +95,28 @@ if __name__ == '__main__':
     import bot_corners
     import bot_space
 
-    play_match(bot_space, bot_null, 10, verbose=True)
+    bots = [
+        human,
+        bot_null,
+        bot_simple,
+        bot_random,
+        bot_biggest,
+        bot_center,
+        bot_biggest_center,
+        bot_corners,
+        bot_space,
+    ]
+
+    a_name = sys.argv[1]
+    b_name = sys.argv[2]
+    for bot in bots:
+        if bot.__name__ == a_name:
+            bot_a = bot
+        if bot.__name__ == b_name:
+            bot_b = bot
+
+    num_rounds = 1
+    if len(sys.argv) > 3:
+        num_rounds = int(sys.argv[3])
+
+    play_match(bot_a, bot_b, num_rounds, verbose=True)
