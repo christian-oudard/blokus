@@ -1,5 +1,5 @@
 from collections import defaultdict
-from poly import translate, adjacencies, corner_adjacencies
+from poly import adjacencies, corner_adjacencies
 
 class Board:
     _empty = '.'
@@ -42,29 +42,29 @@ class Board:
             self.data[point] = color
 
     def _check_place_piece(self, piece, position, color):
-        points = list(translate(piece._points, *position))
+        piece = piece.translated(*position)
         # Check bounds.
-        for point in points:
+        for point in piece._points:
             if not self.in_bounds(point):
                 return 'Piece out of bounds'
         # Check overlaps
-        for point in points:
+        for point in piece._points:
             if point in self.data.keys():
                 return 'Overlapping pieces'
         # Check adjacencies.
-        for adj in adjacencies(points):
+        for adj in adjacencies(piece._points):
             if self.data.get(adj) == color:
                 return 'Cannot play next to a piece of the same color'
 
         if self.is_first(color):
             # Check start points.
-            if not any(p in self.start_points for p in points):
+            if not any(p in self.start_points for p in piece._points):
                 return 'Must play on a start point'
         else:
             # Check corner connections.
             if not any(
                 self.data.get(corner) == color
-                for corner in corner_adjacencies(points)
+                for corner in corner_adjacencies(piece._points)
             ):
                 return 'Must play with corners touching a piece of the same color'
 

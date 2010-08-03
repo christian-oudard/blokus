@@ -45,8 +45,8 @@ class Poly:
         min_y = min(y for x, y in self._points)
         return self.translated(-min_x, -min_y)
 
-    def translated(self, x, y):
-        return Poly(translate(self._points, x, y))
+    def translated(self, tx, ty):
+        return Poly((x + tx, y + ty) for x, y in self._points)
 
     def canonical(self):
         """
@@ -132,10 +132,6 @@ class Poly:
         orientations = rotations + mirrors
         orientations = set(p.translate_origin() for p in orientations)
         return orientations
-
-def translate(points, tx, ty):
-    for x, y in points:
-        yield x + tx, y + ty
 
 def adjacencies(points):
     """
