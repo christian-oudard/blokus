@@ -41,7 +41,7 @@ XXX,,
 Cannot place a piece off the board.
 >>> Board.size = 3
 >>> board = Board()
->>> board.place_piece(four_o.translated(-1, -1), 'X')
+>>> board.place_piece(four_o.translated(-1, -1), 'X', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Piece out of bounds
@@ -49,7 +49,7 @@ ValueError: Piece out of bounds
 ,,,
 ,,,
 ,,,
->>> board.place_piece(four_o.translated(2, 2), 'X')
+>>> board.place_piece(four_o.translated(2, 2), 'X', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Piece out of bounds
@@ -61,12 +61,12 @@ ValueError: Piece out of bounds
 Cannot place a piece on top of another piece.
 >>> Board.size = 3
 >>> board = Board()
->>> board.place_piece(four_o.translated(0, 0), 'X')
+>>> board.place_piece(four_o.translated(0, 0), 'X', reason=True)
 >>> print(board)
 XX,
 XX,
 ,,,
->>> board.place_piece(four_o.translated(1, 0), 'O')
+>>> board.place_piece(four_o.translated(1, 0), 'O', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Overlapping pieces
@@ -83,7 +83,7 @@ Cannot place a piece next to another piece of your color.
 X,,
 X,,
 ,,,
->>> board.place_piece(two.translated(1, 1), 'X')
+>>> board.place_piece(two.translated(1, 1), 'X', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Cannot play next to a piece of the same color
@@ -101,7 +101,7 @@ X,,,
 X,,,
 ,,,,
 ,,,,
->>> board.place_piece(four_o.translated(2, 0), 'X')
+>>> board.place_piece(four_o.translated(2, 0), 'X', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Must play with corners touching a piece of the same color
@@ -127,7 +127,7 @@ _,,,
 ,,,,
 ,,,,
 ,,,_
->>> board.place_piece(four_o.translated(0, 2), 'X')
+>>> board.place_piece(four_o.translated(0, 2), 'X', reason=True)
 Traceback (most recent call last):
     ...
 ValueError: Must play on a start point
@@ -148,10 +148,12 @@ Test finding all moves.
 >>> Board.start_points = ((4, 4), (9, 9))
 
 >>> board = Board()
+>>> list(board.legal_moves('X', []))
+[]
 
-#>>> moves = list(board.legal_moves('X', all_pieces))
-#>>> len(moves)
-#828
+>>> moves = list(board.legal_moves('X', all_pieces))
+>>> len(moves)
+828
 
 >>> a = sorted(four_s.orientations())[1]
 >>> board.place_piece(a.translated(8, 9), 'X')

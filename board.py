@@ -29,45 +29,64 @@ class Board:
     def is_first(self, color):
         return not any(v == color for v in self.data.values())
 
-    def place_piece(self, piece, color):
-        reason = self._check_place_piece(piece, color)
+    def place_piece(self, piece, color, reason=False):
         if reason:
-            raise ValueError(reason)
+            reason = self._check_place_piece(piece, color, reason=True)
+            if reason is not None:
+                raise ValueError(reason)
+        else:
+            if not self._check_place_piece(piece, color):
+                raise ValueError('Invalid move')
         self._place_piece(piece, color)
 
     def _place_piece(self, piece, color):
         for point in piece:
             self.data[point] = color
 
-    def _check_place_piece(self, piece, color):
+    def _check_place_piece(self, piece, color, reason=False):
         # Check bounds.
         for point in piece:
             if not self.in_bounds(point):
-                return 'Piece out of bounds'
+                if reason:
+                    return 'Piece out of bounds'
+                return False
         # Check overlaps
         for point in piece:
             if point in self.data.keys():
-                return 'Overlapping pieces'
+                if reason:
+                    return 'Overlapping pieces'
+                return False
         # Check adjacencies.
         for adj in piece.adjacencies():
             if self.data.get(adj) == color:
-                return 'Cannot play next to a piece of the same color'
+                if reason:
+                    return 'Cannot play next to a piece of the same color'
+                return False
 
         if self.is_first(color):
             # Check start points.
             if not any(p in self.start_points for p in piece):
-                return 'Must play on a start point'
+                if reason:
+                    return 'Must play on a start point'
+                return False
         else:
             # Check corner connections.
             if not any(
                 self.data.get(corner) == color
                 for corner in piece.corner_adjacencies()
             ):
-                return 'Must play with corners touching a piece of the same color'
+                if reason:
+                    return 'Must play with corners touching a piece of the same color'
+                return False
 
-        return None # No problems
+        if reason:
+            return None # No problems
+        return True
 
     def legal_moves(self, player, pieces):
+        if not pieces:
+            return
+
         # Restrict search space to near the available corners.
         points_poly = Poly(p for p, v in self.data.items() if v == player)
         corners = list(points_poly.corner_adjacencies())
@@ -93,8 +112,7 @@ class Board:
                 for x, y in locations:
                     t_piece = piece.translated(x, y)
                     #TODO check whether it hits any corners?
-                    reason = self._check_place_piece(t_piece, player)
-                    if reason is None:
+                    if self._check_place_piece(t_piece, player):
                         yield t_piece
 
     def in_bounds(self, point):
