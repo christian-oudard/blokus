@@ -107,6 +107,7 @@ if __name__ == '__main__':
         bot_space,
     ]
 
+    import sys
     a_name = sys.argv[1]
     b_name = sys.argv[2]
     for bot in bots:
