@@ -142,4 +142,15 @@ _,,,
 ,,,,
 ,,XX
 ,,XX
+
+
+Play some games.
+>>> from play import play_game
+>>> import bot_null
+>>> play_game(bot_null, bot_null)
+(89, 89)
+>>> import bot_simple
+>>> a, b = play_game(bot_simple, bot_simple)
+>>> assert a < 89
+>>> assert b < 89
 """

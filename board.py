@@ -72,11 +72,10 @@ class Board:
             for piece in c_piece.orientations():
                 for x in range(self.size):
                     for y in range(self.size):
-                        location = x, y
-                        t_piece = piece.translated(location)
-                        reason = self._check_place_piece(piece, player)
+                        t_piece = piece.translated(x, y)
+                        reason = self._check_place_piece(t_piece, player)
                         if reason is None:
-                            yield piece, location
+                            yield t_piece
 
     def in_bounds(self, point):
         x, y = point

@@ -21,22 +21,21 @@ def play_game(a, b, verbose=False):
 
     pass_count = 0
     for player in itertools.cycle(players):
-        move = player_interfaces[player].move(board, player, player_pieces)
-        if move is None: # Player passes
+        piece = player_interfaces[player].move(board, player, player_pieces)
+        if piece is None: # Player passes
             pass_count += 1
             if pass_count >= len(players):
                 break
             continue
         else:
             pass_count = 0
-        piece, location = move
         available_pieces = player_pieces[player]
         c_piece = piece.canonical()
         if c_piece in available_pieces:
             available_pieces.remove(c_piece)
         else:
             raise ValueError('Piece not available.')
-        board.place_piece(piece, location, player)
+        board.place_piece(piece, player)
         if verbose:
             print(board)
             print()
