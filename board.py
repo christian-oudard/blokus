@@ -1,5 +1,5 @@
 from collections import defaultdict
-from poly import adjacencies, corner_adjacencies
+from poly import corner_adjacencies
 
 class Board:
     _empty = '.'
@@ -52,7 +52,7 @@ class Board:
             if point in self.data.keys():
                 return 'Overlapping pieces'
         # Check adjacencies.
-        for adj in adjacencies(piece):
+        for adj in piece.adjacencies():
             if self.data.get(adj) == color:
                 return 'Cannot play next to a piece of the same color'
 

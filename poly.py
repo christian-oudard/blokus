@@ -136,32 +136,32 @@ class Poly:
         orientations = set(p.translate_origin() for p in orientations)
         return orientations
 
-def adjacencies(points):
-    """
-    >>> points = [(0, 0), (0, 1), (1, 0)]
-    >>> print(Poly(points))
-    ##
-    #
-    >>> adjs = list(adjacencies(points))
-    >>> len(adjs)
-    7
-    >>> print(Poly(adjs).translate_origin())
-     ##
-    #  #
-    # #
-     #
-    """
-    points = set(points)
-    for x, y in list(points):
-        for adj in [
-            (x - 1, y),
-            (x + 1, y),
-            (x, y - 1),
-            (x, y + 1),
-        ]:
-            if adj not in points:
-                yield adj
-                points.add(adj)
+    def adjacencies(self):
+        """
+        >>> poly = Poly([(0, 0), (0, 1), (1, 0)])
+        >>> print(poly)
+        ##
+        #
+        >>> adjs = list(poly.adjacencies())
+        >>> len(adjs)
+        7
+        >>> print(Poly(adjs).translate_origin())
+         ##
+        #  #
+        # #
+         #
+        """
+        points = set(self)
+        for x, y in list(points):
+            for adj in [
+                (x - 1, y),
+                (x + 1, y),
+                (x, y - 1),
+                (x, y + 1),
+            ]:
+                if adj not in points:
+                    yield adj
+                    points.add(adj)
 
 def corner_adjacencies(points):
     """
@@ -178,7 +178,7 @@ def corner_adjacencies(points):
     #
      #  #
     """
-    adjs = set(adjacencies(points))
+    adjs = set(Poly(points).adjacencies())
     points = set(points)
     for x, y in list(points):
         for adj in [
@@ -241,7 +241,7 @@ def gen_polys(generation):
     new_polys = set()
     for poly in gen_polys(generation - 1):
         points = poly._points
-        for adj in adjacencies(points):
+        for adj in poly.adjacencies():
             new_poly = Poly(points + (adj,))
             new_polys.add(new_poly.canonical())
     return new_polys
