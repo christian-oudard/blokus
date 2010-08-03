@@ -94,6 +94,7 @@ if __name__ == '__main__':
     import bot_biggest_center
     import bot_corners
     import bot_space
+    import bot_efficiency
 
     bots = [
         human,
@@ -105,6 +106,7 @@ if __name__ == '__main__':
         bot_biggest_center,
         bot_corners,
         bot_space,
+        bot_efficiency,
     ]
 
     import sys
