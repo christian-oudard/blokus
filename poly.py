@@ -1,5 +1,3 @@
-# coding: utf8
-
 class Poly:
     def __init__(self, points):
         # Give points a predictable order.
