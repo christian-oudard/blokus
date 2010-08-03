@@ -89,9 +89,11 @@ class Board:
 
         # Restrict search space to near the available corners.
         points_poly = Poly(p for p, v in self.data.items() if v == player)
-        corners = list(points_poly.corner_adjacencies())
+        corners = set(points_poly.corner_adjacencies())
         if self.is_first(player):
-            corners.extend(p for p in self.start_points if self.data.get(p) is None)
+            for p in self.start_points:
+                if self.data.get(p) is None:
+                    corners.add(p)
         min_x = min(x for x, y in corners)
         min_y = min(y for x, y in corners)
         max_x = max(x for x, y in corners)
@@ -107,7 +109,7 @@ class Board:
         )
         locations = [(x, y) for x in x_range for y in y_range]
 
-        # Strip out locations by manhattan distance
+        # Strip out locations by manhattan distance.
         for l in list(locations):
             if not any(
                 manhattan_distance(l, c) < max_piece_size
@@ -119,7 +121,9 @@ class Board:
             for piece in c_piece.orientations():
                 for x, y in locations:
                     t_piece = piece.translated(x, y)
-                    #TODO check whether it hits any corners?
+                    # Check whether it hits any corners.
+                    if not any(p in corners for p in t_piece):
+                        continue
                     if self._check_place_piece(t_piece, player):
                         yield t_piece
 
