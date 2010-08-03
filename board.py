@@ -106,7 +106,15 @@ class Board:
             min(self.size, max_y + 1),
         )
         locations = [(x, y) for x in x_range for y in y_range]
-        #TODO: strip out locations by manhattan distance?
+
+        # Strip out locations by manhattan distance
+        for l in list(locations):
+            if not any(
+                manhattan_distance(l, c) < max_piece_size
+                for c in corners
+            ):
+                locations.remove(l)
+
         for c_piece in pieces:
             for piece in c_piece.orientations():
                 for x, y in locations:
@@ -119,3 +127,8 @@ class Board:
         x, y = point
         return (x >= 0 and y >= 0 and
                 x < self.size and y < self.size)
+
+def manhattan_distance(a, b):
+    ax, ay = a
+    bx, by = b
+    return abs(bx - ax) + abs(by - ay)
