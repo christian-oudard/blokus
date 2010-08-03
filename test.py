@@ -1,6 +1,6 @@
 """
 >>> from board import Board
->>> from pieces import two, four_o, five_f
+>>> from pieces import all_pieces, two, four_o, five_f, five_z, four_s, five_w, five_v
 
 For testing purposes, count everything as a start point.
 Three or more dots has special meaning to doctest, use comma for empty squares
@@ -143,8 +143,46 @@ _,,,
 ,,XX
 ,,XX
 
+Test finding all moves.
+>>> Board.size = 14
+>>> Board.start_points = ((4, 4), (9, 9))
 
-Play some games.
+>>> board = Board()
+
+#>>> moves = list(board.legal_moves('X', all_pieces))
+#>>> len(moves)
+#828
+
+>>> a = sorted(four_s.orientations())[1]
+>>> board.place_piece(a.translated(8, 9), 'X')
+>>> b = sorted(five_z.orientations())[3]
+>>> board.place_piece(b.translated(11, 7), 'X')
+>>> c = sorted(five_w.orientations())[2]
+>>> board.place_piece(c.translated(6, 7), 'X')
+>>> d = sorted(five_v.orientations())[1]
+>>> board.place_piece(d.translated(3, 8), 'X')
+>>> print(board)
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,_,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,XX,,,XX
+,,,X,,XX,,,,X,
+,,,X,,X,XX,XX,
+,,,XXX,,,XX,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+>>> pieces = [p for p in all_pieces if p not in (a, b, c, d)]
+>>> moves = list(board.legal_moves('X', pieces))
+>>> len(moves)
+854
+
+
+Play a game between bots.
 >>> from play import play_game
 >>> import bot_null
 >>> play_game(bot_null, bot_null)

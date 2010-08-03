@@ -1,4 +1,4 @@
-from collections import defaultdict
+from poly import Poly
 
 class Board:
     _empty = '.'
@@ -68,14 +68,34 @@ class Board:
         return None # No problems
 
     def legal_moves(self, player, pieces):
+        # Restrict search space to near the available corners.
+        points_poly = Poly(p for p, v in self.data.items() if v == player)
+        corners = list(points_poly.corner_adjacencies())
+        if self.is_first(player):
+            corners.extend(p for p in self.start_points if self.data.get(p) is None)
+        min_x = min(x for x, y in corners)
+        min_y = min(y for x, y in corners)
+        max_x = max(x for x, y in corners)
+        max_y = max(y for x, y in corners)
+        max_piece_size = max(len(p) for p in pieces)
+        x_range = range(
+            max(0, min_x - max_piece_size + 1),
+            min(self.size, max_x + 1),
+        )
+        y_range = range(
+            max(0, min_y - max_piece_size + 1),
+            min(self.size, max_y + 1),
+        )
+        locations = [(x, y) for x in x_range for y in y_range]
+        #TODO: strip out locations by manhattan distance?
         for c_piece in pieces:
             for piece in c_piece.orientations():
-                for x in range(self.size):
-                    for y in range(self.size):
-                        t_piece = piece.translated(x, y)
-                        reason = self._check_place_piece(t_piece, player)
-                        if reason is None:
-                            yield t_piece
+                for x, y in locations:
+                    t_piece = piece.translated(x, y)
+                    #TODO check whether it hits any corners?
+                    reason = self._check_place_piece(t_piece, player)
+                    if reason is None:
+                        yield t_piece
 
     def in_bounds(self, point):
         x, y = point
