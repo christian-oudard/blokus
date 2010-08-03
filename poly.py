@@ -163,34 +163,34 @@ class Poly:
                     yield adj
                     points.add(adj)
 
-def corner_adjacencies(points):
-    """
-    >>> points = [(0, 0), (1, 0), (1, 1), (2, 1)]
-    >>> print(Poly(points))
-    ##
-     ##
-    >>> adjs = list(corner_adjacencies(points))
-    >>> len(adjs)
-    6
-    >>> print(Poly(adjs).translate_origin())
-    #  #
+    def corner_adjacencies(self):
+        """
+        >>> poly = Poly([(0, 0), (1, 0), (1, 1), (2, 1)])
+        >>> print(poly)
+        ##
+         ##
+        >>> adjs = list(poly.corner_adjacencies())
+        >>> len(adjs)
+        6
+        >>> print(Poly(adjs).translate_origin())
+        #  #
+            #
         #
-    #
-     #  #
-    """
-    adjs = set(Poly(points).adjacencies())
-    points = set(points)
-    for x, y in list(points):
-        for adj in [
-            (x - 1, y - 1),
-            (x - 1, y + 1),
-            (x + 1, y - 1),
-            (x + 1, y + 1),
-        ]:
-            if adj not in points and \
-               adj not in adjs:
-                yield adj
-                points.add(adj)
+         #  #
+        """
+        adjs = set(self.adjacencies())
+        points = set(self)
+        for x, y in self:
+            for adj in [
+                (x - 1, y - 1),
+                (x - 1, y + 1),
+                (x + 1, y - 1),
+                (x + 1, y + 1),
+            ]:
+                if adj not in points and \
+                   adj not in adjs:
+                    yield adj
+                    points.add(adj)
 
 
 def gen_polys(generation):

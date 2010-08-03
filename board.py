@@ -1,5 +1,4 @@
 from collections import defaultdict
-from poly import corner_adjacencies
 
 class Board:
     _empty = '.'
@@ -64,7 +63,7 @@ class Board:
             # Check corner connections.
             if not any(
                 self.data.get(corner) == color
-                for corner in corner_adjacencies(piece._points)
+                for corner in piece.corner_adjacencies()
             ):
                 return 'Must play with corners touching a piece of the same color'
 
