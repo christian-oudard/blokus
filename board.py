@@ -38,27 +38,27 @@ class Board:
 
     def _place_piece(self, piece, position, color):
         piece = piece.translated(*position)
-        for point in piece._points:
+        for point in piece:
             self.data[point] = color
 
     def _check_place_piece(self, piece, position, color):
         piece = piece.translated(*position)
         # Check bounds.
-        for point in piece._points:
+        for point in piece:
             if not self.in_bounds(point):
                 return 'Piece out of bounds'
         # Check overlaps
-        for point in piece._points:
+        for point in piece:
             if point in self.data.keys():
                 return 'Overlapping pieces'
         # Check adjacencies.
-        for adj in adjacencies(piece._points):
+        for adj in adjacencies(piece):
             if self.data.get(adj) == color:
                 return 'Cannot play next to a piece of the same color'
 
         if self.is_first(color):
             # Check start points.
-            if not any(p in self.start_points for p in piece._points):
+            if not any(p in self.start_points for p in piece):
                 return 'Must play on a start point'
         else:
             # Check corner connections.

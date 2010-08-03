@@ -16,15 +16,18 @@ class Poly:
         ##
          ##
         """
-        max_x = max(x for x, y in self._points)
-        max_y = max(y for x, y in self._points)
+        max_x = max(x for x, y in self)
+        max_y = max(y for x, y in self)
         grid = [[' ' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
-        for x, y in self._points:
+        for x, y in self:
             grid[y][x] = self._block_char
         return '\n'.join(''.join(line).rstrip() for line in grid)
 
     def __len__(self):
         return len(self._points)
+
+    def __iter__(self):
+        return iter(self._points)
 
     def __eq__(self, other):
         return isinstance(other, Poly) and self._points == other._points
@@ -41,12 +44,12 @@ class Poly:
                 (len(other), other._points))
 
     def translate_origin(self):
-        min_x = min(x for x, y in self._points)
-        min_y = min(y for x, y in self._points)
+        min_x = min(x for x, y in self)
+        min_y = min(y for x, y in self)
         return self.translated(-min_x, -min_y)
 
     def translated(self, tx, ty):
-        return Poly((x + tx, y + ty) for x, y in self._points)
+        return Poly((x + tx, y + ty) for x, y in self)
 
     def canonical(self):
         """
@@ -84,7 +87,7 @@ class Poly:
         #
         #
         """
-        clone = Poly(self._points)
+        clone = Poly(self)
         return min(clone.orientations())
 
     def orientations(self):
@@ -122,13 +125,13 @@ class Poly:
         ##
         ----
         """
-        clone = Poly(self._points)
+        clone = Poly(self)
         rotations = [clone]
         for _ in range(3):
-            rotations.append(Poly((y, -x) for x, y in rotations[-1]._points))
+            rotations.append(Poly((y, -x) for x, y in rotations[-1]))
         mirrors = []
         for r in rotations:
-            mirrors.append(Poly((x, -y) for x, y in r._points))
+            mirrors.append(Poly((x, -y) for x, y in r))
         orientations = rotations + mirrors
         orientations = set(p.translate_origin() for p in orientations)
         return orientations
