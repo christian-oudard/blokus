@@ -1,4 +1,7 @@
-def evaluate(board, piece, location):
+import random
+from collections import defaultdict
+
+def evaluate(board, piece):
     # Score by the size of the piece.
     return len(piece)
 
@@ -8,8 +11,8 @@ def move_by_evaluation(eval_func):
         if not moves:
             return
         moves_by_score = defaultdict(list)
-        for piece, location in moves:
-            moves_by_score[eval_func(board, piece, location)].append((piece, location))
+        for piece in moves:
+            moves_by_score[eval_func(board, piece)].append(piece)
         max_score = max(moves_by_score.keys())
         return random.choice(moves_by_score[max_score])
     return move

@@ -2,17 +2,17 @@ import random
 from copy import deepcopy
 from collections import defaultdict
 
-from poly import Poly, adjacencies, corner_adjacencies
+from poly import Poly, adjacent
 
 def free_corners(points, board, player):
     # Must be in bounds, unoccupied, and not next to any pieces of the same color.
-    for corner in corner_adjacencies(points):
+    for corner in Poly(points).corner_adjacencies():
         if not board.in_bounds(corner):
             continue
         if board.data.get(corner):
             continue
         if any(board.data.get(adj) == player
-               for adj in adjacencies([corner])):
+               for adj in adjacent(corner)):
            continue
         yield corner
 
@@ -46,10 +46,10 @@ def move(board, player, player_pieces):
     if not moves:
         return
     moves_by_score = defaultdict(list)
-    for piece, location in moves:
+    for piece in moves:
         temp_board = deepcopy(board)
-        temp_board.place_piece(piece, location, player)
+        temp_board.place_piece(piece, player)
         score = evaluate(temp_board, player, opponent)
-        moves_by_score[score].append((piece, location))
+        moves_by_score[score].append(piece)
     max_score = max(moves_by_score.keys())
     return random.choice(moves_by_score[max_score])

@@ -75,13 +75,14 @@ def choose_placement(board, piece, player):
 
     location = board.size // 2, board.size // 2
     while True:
+        t_piece = piece.translated(*location)
         temp_board = deepcopy(board)
-        reason = temp_board._check_place_piece(piece, location, player)
+        reason = temp_board._check_place_piece(t_piece, player)
         if reason is not None:
             color = '#'
         else:
             color = '@'
-        temp_board._place_piece(piece, location, color)
+        temp_board._place_piece(t_piece, color)
         display_board(temp_board, player)
 
         if reason is not None:
@@ -91,7 +92,6 @@ def choose_placement(board, piece, player):
         print('Press Enter to confirm move, or backspace to go back.')
 
         command = getch_arrow()
-        print(repr(command))
 
         if command == '\x03': # Ctrl-C
             raise KeyboardInterrupt()
@@ -117,12 +117,12 @@ def choose_placement(board, piece, player):
 
         # Go back.
         if command == '\x7f': # Backspace key
-            return None, None # Go back to piece selection.
+            return None # Go back to piece selection.
 
         # Confirm.
         if command == '\r': # Enter key
             if reason is None:
-                return piece, location
+                return t_piece
 
 def move(board, player, player_pieces):
     print("{}'s turn.".format(player))
@@ -134,8 +134,8 @@ def move(board, player, player_pieces):
         if piece == 'pass':
             return None
 
-        piece, location = choose_placement(board, piece, player)
-        if piece is None:
+        t_piece = choose_placement(board, piece, player)
+        if t_piece is None:
             continue # User chose to re-choose piece.
 
-        return piece, location
+        return t_piece

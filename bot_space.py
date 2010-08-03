@@ -2,7 +2,7 @@ import random
 from copy import deepcopy
 from collections import defaultdict
 
-from poly import Poly, adjacencies
+from poly import adjacent
 
 def available_space(board, player, opponent):
     # Free space must not be occupied or next to a same-color piece.
@@ -13,7 +13,7 @@ def available_space(board, player, opponent):
             if board.data.get(point):
                 continue
             if any(board.data.get(adj) == player
-                   for adj in adjacencies([point])):
+                   for adj in adjacent(point)):
                 continue
             space += 1
     return space
@@ -46,11 +46,11 @@ def move(board, player, player_pieces):
     if not moves:
         return
     moves_by_score = defaultdict(list)
-    for piece, location in moves:
+    for piece in moves:
         temp_board = deepcopy(board)
-        temp_board.place_piece(piece, location, player)
+        temp_board.place_piece(piece, player)
         score = evaluate(temp_board, player, opponent)
-        moves_by_score[score].append((piece, location))
+        moves_by_score[score].append(piece)
     max_score = max(moves_by_score.keys())
     return random.choice(moves_by_score[max_score])
 
