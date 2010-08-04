@@ -1,4 +1,4 @@
-from poly import Poly
+from poly import Poly, adjacent
 
 class Board:
     _empty = '.'
@@ -86,53 +86,57 @@ class Board:
     def legal_moves(self, player, pieces):
         if not pieces:
             return
+        pieces = set(pieces)
 
-        # Restrict search space to near the available corners.
+        # Find available corners to play from.
         points_poly = Poly(p for p, v in self.data.items() if v == player)
         corners = set(points_poly.corner_adjacencies())
         if self.is_first(player):
             for p in self.start_points:
                 if self.data.get(p) is None:
                     corners.add(p)
-        min_x = min(x for x, y in corners)
-        min_y = min(y for x, y in corners)
-        max_x = max(x for x, y in corners)
-        max_y = max(y for x, y in corners)
-        max_piece_size = max(len(p) for p in pieces)
-        x_range = range(
-            max(0, min_x - max_piece_size + 1),
-            min(self.size, max_x + 1),
-        )
-        y_range = range(
-            max(0, min_y - max_piece_size + 1),
-            min(self.size, max_y + 1),
-        )
-        locations = [(x, y) for x in x_range for y in y_range]
 
-        # Strip out locations by manhattan distance.
-        for l in list(locations):
-            if not any(
-                manhattan_distance(l, c) < max_piece_size
-                for c in corners
-            ):
-                locations.remove(l)
+        # Find available space to play into.
+        # Free space must not be occupied or next to a same-color piece.
+        free_space = set()
+        for x in range(self.size):
+            for y in range(self.size):
+                point = x, y
+                if self.data.get(point) is not None:
+                    continue
+                if any(self.data.get(adj) == player
+                       for adj in adjacent(point)):
+                    continue
+                free_space.add(point)
+        corners &= free_space
 
-        for c_piece in pieces:
-            for piece in c_piece.orientations():
-                for x, y in locations:
-                    t_piece = piece.translated(x, y)
-                    # Check whether it hits any corners.
-                    if not any(p in corners for p in t_piece):
-                        continue
-                    if self._check_place_piece(t_piece, player):
-                        yield t_piece
+        # Starting from the corners, grow successively larger possible plays.
+        # First generation is just the size 1 polyomino on each corner.
+        generations = [{Poly([c]) for c in corners}]
+        max_size = max(len(p) for p in pieces)
+        for gen_num in range(2, max_size + 1):
+            old_gen = generations[-1]
+            new_gen = set()
+            # Add points to each polyomino in the last generation.
+            for poly in old_gen:
+                for adj in poly.adjacencies():
+                    if adj in free_space:
+                        new_gen.add(Poly(poly._points + (adj,)))
+            generations.append(new_gen)
+
+        for gen in generations:
+            for piece in gen:
+                if piece.canonical() not in pieces:
+                    continue
+                ###
+                #reason = self._check_place_piece(piece, player, reason=True)
+                #if reason is not None:
+                #    self._place_piece(piece, player)
+                #    assert False, '%s\n%s' % (reason, self)
+                ###
+                yield piece
 
     def in_bounds(self, point):
         x, y = point
         return (x >= 0 and y >= 0 and
                 x < self.size and y < self.size)
-
-def manhattan_distance(a, b):
-    ax, ay = a
-    bx, by = b
-    return abs(bx - ax) + abs(by - ay)

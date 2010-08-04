@@ -233,9 +233,8 @@ def gen_polys(generation):
 
     new_polys = set()
     for poly in gen_polys(generation - 1):
-        points = poly._points
         for adj in poly.adjacencies():
-            new_poly = Poly(points + (adj,))
+            new_poly = Poly(poly._points + (adj,))
             new_polys.add(new_poly.canonical())
     return new_polys
 
