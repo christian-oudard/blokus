@@ -7,6 +7,8 @@ from copy import deepcopy
 from poly import all_pieces, piece_to_name, name_to_piece
 from board import Board
 
+from human import display_board
+
 def play_game(a, b, verbose=False):
     players = ['X', 'O']
     player_interfaces = {
@@ -38,8 +40,7 @@ def play_game(a, b, verbose=False):
             raise ValueError('Piece not available.')
         board.place_piece(piece, player)
         if verbose:
-            print(board)
-            print()
+            display_board(board, player)
 
     scores = {}
     for player in players:
@@ -112,6 +113,7 @@ if __name__ == '__main__':
     import bot_center
     import bot_corners
     import bot_efficiency
+    import bot_center_efficiency
 
     bots = [
         human,
@@ -123,6 +125,7 @@ if __name__ == '__main__':
         bot_squarecenter,
         bot_corners,
         bot_efficiency,
+        bot_center_efficiency,
     ]
 
     #tournament(bots[-4:], verbose=True)
@@ -140,4 +143,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 3:
         num_rounds = int(sys.argv[3])
 
-    play_match(bot_a, bot_b, num_rounds, verbose=False)
+    play_match(bot_a, bot_b, num_rounds, verbose=True)
