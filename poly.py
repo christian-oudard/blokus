@@ -85,8 +85,7 @@ class Poly:
         #
         #
         """
-        poly = self.translate_origin()
-        cached = _canonical_cache.get(poly)
+        cached = _canonical_cache.get(self)
         if cached:
             return cached
         return self._canonical()
@@ -374,7 +373,11 @@ assert len(name_to_piece) == len(all_pieces)
 assert len(piece_to_name) == len(all_pieces)
 
 # Generate the canonical cache.
+_board_size = 14
 _canonical_cache = {}
 for poly in all_pieces:
     for o in poly.orientations():
-        _canonical_cache[o] = poly
+        for x in range(_board_size):
+            for y in range(_board_size):
+                t_piece = o.translated(x, y)
+                _canonical_cache[t_piece] = poly
