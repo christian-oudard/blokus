@@ -55,7 +55,8 @@ def move(board, player, player_pieces, debug=False):
         temp_board = deepcopy(board)
         temp_board.place_piece(piece, player)
         move_evals[piece] = tuple(
-            func(temp_board, player, opponent)
+            (func(temp_board, player, opponent) -
+             func(temp_board, opponent, player))
             for func, weight in eval_funcs
         )
 
