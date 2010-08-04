@@ -3,7 +3,7 @@
 import itertools
 import random
 from copy import deepcopy
-from pieces import all_pieces, piece_to_name, name_to_piece
+from poly import all_pieces, piece_to_name, name_to_piece
 from board import Board
 
 def play_game(a, b, verbose=False):
@@ -120,4 +120,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 3:
         num_rounds = int(sys.argv[3])
 
-    play_match(bot_a, bot_b, num_rounds, verbose=True)
+    play_match(bot_a, bot_b, num_rounds, verbose=False)

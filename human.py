@@ -1,7 +1,7 @@
 import sys
 from copy import deepcopy
 from getch import getch, getch_arrow
-from pieces import piece_to_name, name_to_piece
+from poly import piece_to_name, name_to_piece
 
 def display_board(board, player):
     from term_colors import print_color, rgb, gray

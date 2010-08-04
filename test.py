@@ -1,6 +1,6 @@
 """
 >>> from board import Board
->>> from pieces import all_pieces, two, four_o, five_f, five_z, four_s, five_w, five_v
+>>> from poly import all_pieces, two, four_o, five_f, five_z, four_s, five_w, five_v
 
 For testing purposes, count everything as a start point.
 Three or more dots has special meaning to doctest, use comma for empty squares
