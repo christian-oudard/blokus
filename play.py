@@ -2,6 +2,7 @@
 
 import itertools
 import random
+from collections import defaultdict
 from copy import deepcopy
 from poly import all_pieces, piece_to_name, name_to_piece
 from board import Board
@@ -84,6 +85,23 @@ def play_match(a, b, num_games, verbose=False):
 
     return total_a, total_b
 
+def tournament(players, verbose=False):
+    scores = defaultdict(int)
+    for a, b in all_pairs(players):
+        a_score, b_score = play_match(a, b, 2)
+        scores[a.__name__] += a_score
+        scores[b.__name__] += b_score
+    if verbose:
+        for name, score in sorted(scores.items(), key=lambda i: i[1]):
+            print('{}: {}'.format(name, score))
+    return scores
+
+def all_pairs(iterable):
+    iterable = list(iterable)
+    for i, a in enumerate(iterable):
+        for b in iterable[i+1:]:
+            yield (a, b)
+
 if __name__ == '__main__':
     import human
     import bot_null
@@ -106,6 +124,8 @@ if __name__ == '__main__':
         bot_corners,
         bot_efficiency,
     ]
+
+    #tournament(bots[-4:], verbose=True)
 
     import sys
     a_name = sys.argv[1]

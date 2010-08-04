@@ -60,6 +60,5 @@ def move(board, player, player_pieces):
         score = evaluate(temp_board, piece, player, opponent)
         moves_by_score[score].append(piece)
     max_score = max(moves_by_score.keys())
-    print(max_score)
     return random.choice(moves_by_score[max_score])
 
