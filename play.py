@@ -111,9 +111,10 @@ if __name__ == '__main__':
     import bot_biggest
     import bot_squarecenter
     import bot_center
-    import bot_corners
     import bot_efficiency
     import bot_center_efficiency
+    import bot_corners
+    import bot_corners_center
 
     bots = [
         human,
@@ -123,9 +124,10 @@ if __name__ == '__main__':
         bot_biggest,
         bot_center,
         bot_squarecenter,
-        bot_corners,
         bot_efficiency,
         bot_center_efficiency,
+        bot_corners,
+        bot_corners_center,
     ]
 
     #tournament(bots[-4:], verbose=True)

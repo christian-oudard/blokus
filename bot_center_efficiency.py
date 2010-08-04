@@ -37,7 +37,7 @@ def evaluate(board, new_piece, player, opponent):
     size_score = len(new_piece)
 
     # Each square in the polyomino gets points for how close to the center it is.
-    center = board.size / 2, board.size / 2
+    center = (board.size - 1) / 2, (board.size - 1) / 2
     center_score = -max(square_distance(p, center) for p in new_piece)
 
     # Edge efficiency

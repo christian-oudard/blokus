@@ -12,7 +12,7 @@ def evaluate(board, piece):
 
     # Each square in the polyomino gets points for how close to the center it is.
     center_score = 0
-    center = board.size / 2, board.size / 2
+    center = (board.size - 1) / 2, (board.size - 1) / 2
     max_dist = square_distance((0, 0), center)
     for point in piece:
         d = square_distance(point, center)
