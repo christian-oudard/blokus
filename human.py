@@ -77,7 +77,7 @@ def choose_placement(board, piece, player):
     while True:
         t_piece = piece.translated(*location)
         temp_board = deepcopy(board)
-        reason = temp_board._check_place_piece(t_piece, player)
+        reason = temp_board._check_place_piece(t_piece, player, reason=True)
         if reason is not None:
             color = '#'
         else:
