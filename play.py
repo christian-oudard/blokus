@@ -89,10 +89,12 @@ def play_match(a, b, num_games, verbose=False):
 def tournament(players, verbose=False):
     scores = defaultdict(int)
     for a, b in all_pairs(players):
-        a_score, b_score = play_match(a, b, 2)
+        a_score, b_score = play_match(a, b, 2, verbose)
         scores[a.__name__] += a_score
         scores[b.__name__] += b_score
     if verbose:
+        print()
+        print('tournament score')
         for name, score in sorted(scores.items(), key=lambda i: i[1]):
             print('{}: {}'.format(name, score))
     return scores
@@ -130,7 +132,7 @@ if __name__ == '__main__':
         bot_corners_center,
     ]
 
-    #tournament(bots[-4:], verbose=True)
+    #tournament(bots[-6:], verbose=True)
 
     import sys
     a_name = sys.argv[1]
