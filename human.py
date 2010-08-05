@@ -12,7 +12,6 @@ def display_board(board, player):
         'X': orange,
         'O': purple,
     }
-    dark_gray = gray(5)
     light_gray = gray(15)
     black = gray(0)
 
@@ -21,7 +20,7 @@ def display_board(board, player):
         print('|', end='')
         for x in range(board.size):
             d = board.data.get((x, y))
-            bg = colors.get(d, dark_gray)
+            bg = colors.get(d, None)
             fg = light_gray
             if (x, y) in board.start_points and d is None:
                 s = '()'
